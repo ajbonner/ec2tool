@@ -1,0 +1,8 @@
+access_key: <your_access_key_here>
+secret: <your_secret_here>
+
+instances:
+    aliasname:
+        instance_id: i-e123456
+        elastic_ip: 11.22.33.44
+

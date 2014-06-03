@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'ec2tool'
+
+basedir = ENV['HOME'] + '/.ec2tool'
+distdir = File.expand_path('../../etc/', __FILE__)
+EC2Tool::Config.install(basedir, distdir) unless EC2Tool::Config.installed?(basedir)
+config = EC2Tool::Config.new(basedir + '/' + EC2Tool::Config::CONFIG_FILE)
+ec2 = EC2Tool::EC2Tool.new(config)
+
+opts = OptionParser.new do |opts|
+  opts.banner = "Usage: ec2tool [options]"
+
+  opts.on('--start ALIAS', 'Start instance registered with ALIAS') do |instance|
+    puts ec2.start_instance(instance)
+    exit
+  end
+
+  opts.on('--stop ALIAS', 'Stop instance registered with ALIAS') do |instance|
+    puts ec2.stop_instance(instance)
+    exit
+  end
+
+  opts.on('--status ALIAS', 'Show status of instance registered with ALIAS') do |instance|
+    puts ec2.status(instance)
+    exit
+  end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+
+end
+
+begin 
+  opts.parse!  
+  puts opts
+rescue OptionParser::MissingArgument => e
+  puts e.message.capitalize + "\n\n"
+  puts opts
+  exit 1
+end
+
